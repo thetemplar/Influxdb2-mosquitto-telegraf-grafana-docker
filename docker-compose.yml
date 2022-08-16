@@ -29,7 +29,7 @@ services:
       - DOCKER_INFLUXDB_INIT_PASSWORD=<Password>
       - DOCKER_INFLUXDB_INIT_ORG=home
       - DOCKER_INFLUXDB_INIT_BUCKET=influx_mqtt
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<TOKEN>
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<Token>
 
   grafana:
     image: grafana/grafana:latest
@@ -52,7 +52,7 @@ services:
     ports:
       - '127.0.0.1:8125:8125/udp'
     volumes:
-       - ../telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+       - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
     depends_on:
       - mosquitto
       - influxdb
