@@ -11,6 +11,7 @@ is set to mqttuser/mqttpassword
 ## telegraf/telegraf.conf
 urls needs to be changed to your local url/server-address.
 
+## commands:
 
     git clone https://github.com/thetemplar/Influxdb2-mosquitto-telegraf-grafana-docker
     cd Influxdb2-mosquitto-telegraf-grafana-docker
