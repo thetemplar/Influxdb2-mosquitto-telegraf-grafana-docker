@@ -1,0 +1,59 @@
+version: '2'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/users:/mosquitto/config/users
+      - /opt/mqtt-server/mosquitto/data:/mosquitto/data
+      - /opt/mqtt-server/mosquitto/log:/mosquitto/log
+    restart: always
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - /opt/mqtt-server/influxdb:/var/lib/influxdb2
+      - /opt/mqtt-server/influxdb-conf:/etc/influxdb2
+    restart: always
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=<Password>
+      - DOCKER_INFLUXDB_INIT_ORG=home
+      - DOCKER_INFLUXDB_INIT_BUCKET=influx_mqtt
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<TOKEN>
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    depends_on:
+      - influxdb
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana/:/etc/grafana/provisioning/datasources/
+      - /opt/mqtt-server/grafana:/var/lib/grafana
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=<Password>
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf
+    ports:
+      - '127.0.0.1:8125:8125/udp'
+    volumes:
+       - ../telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+    depends_on:
+      - mosquitto
+      - influxdb
+    restart: always
