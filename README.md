@@ -17,6 +17,8 @@ urls needs to be changed to your local url/server-address.
     cd Influxdb2-mosquitto-telegraf-grafana-docker
 
     find . -type f -exec sed -i 's/<Password>/yourpassword/g' {} +
+    
+    gpg --gen-random -a 0 25 #(or uuidgen)
     find . -type f -exec sed -i 's/<Token>/base64token/g' {} +
 
     chmod 777 run.sh
